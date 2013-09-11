@@ -46,42 +46,32 @@ $(document).ready(function(){
 
 		//Resizing of the canvas element
 
-		//WE GET ALL CANVAS PIXELDATA
+		//GET ALL CANVAS PIXELDATA
 		imageData = ctx.getImageData(0, 0, ww, wh);
 
-		/* WE INITIALIZE THE VARIABLES WHERE WE'LL STORE THE DIMENSIONS
-		OF THE CANVAS RECTANGLE WE HAVE RELEVANT DATA, IE NON-EMPTY
-		PIXELS*/
-
-		/* WE INICIALIZE TOP LEFT CORNER FAR IN THE RIGHT SIDE */
+		/* INICIALIZE TOP LEFT CORNER FAR IN THE RIGHT SIDE */
 		var topLeftCorner = {};
 		topLeftCorner.x = 15000;
 		topLeftCorner.y = 15000;
 
-		/* WE INICIALIZE BOTTOM LEFT CORNER OUTSIDE THE CANVAS
-		BELOW WE'LL SEE WHY :) */
+		/* INICIALIZE BOTTOM LEFT CORNER OUTSIDE THE CANVAS */
 		var bottomRightCorner = {};
 		bottomRightCorner.x = -1;
 		bottomRightCorner.y = -1;                             
 
-		/* NOW WE RUN TROUGHT ALL THE IMAGES'S PIXELS CHECKING IF THERE IS SOTHING ON THEM */
+		/* RUN TROUGHT ALL THE IMAGES'S PIXELS CHECKING IF THERE IS SOTHING ON THEM */
 		for (y = 0; y < wh; y++) {
 			for (x = 0; x < ww; x++) {
 
 				var pixelPosition = (x * 4) + (y * wh * 4);
 
-				/* EACH PIXEL HAS 4 "BYTES" OF DATA CORRESPONDING TO red, green, blue AND alpha*/
-				//r = imageData.data[pixelPosition]; //red
-				//g = imageData.data[pixelPosition+1]; //green
-				//b = imageData.data[pixelPosition+2]; //blue
-				
-				/* I'M ONLY INTERESTED IN ALPHA COMPONENT, IF SOMETHING IS PRESENT IN THAT PIXEL ALPHA (a) VALUE MUST BE > 0*/
-				a = imageData.data[pixelPosition+3]; //alpha
+				/* EACH PIXEL HAS 4 "BYTES" OF DATA CORRESPONDING TO red, green, blue AND alpha, alpha IS +3*/
+				a = imageData.data[pixelPosition+3];
 
-				/* I IGNORE THE r,g,b COMPONENT, ONLY CHECK IF alpha > 0 */
+				/* IGNORE THE COMPONENT if a == 0 (IT'S EMPTY) */
 				if (a > 0) {
 					
-					/* HERE I GET THE TOP MOST LEFT PIXEL, AND THE BOTTOM MOST RIGHT ONE */
+					/* GET THE TOP MOST LEFT PIXEL, AND THE BOTTOM MOST RIGHT ONE */
 					if (x < topLeftCorner.x) {
 						topLeftCorner.x = x;
 					}
@@ -98,22 +88,17 @@ $(document).ready(function(){
 			}
 		}
 
-		/* HERE WE HAVE THE COORDINATES OF THE RECTANGLE CONTAINING SOMETHING DROWN */
-		console.log(topLeftCorner);
-		console.log(bottomRightCorner);
-
-		/* NOW WE SAVE THE REGION WE WANT TO TRIM TO  A VARIABLE */
-		/* (x, y, width, heigth) */
+		/* SAVE THE REGION WE WANT TO TRIM TO  A VARIABLE (x, y, width, heigth) */
 		relevantData = ctx.getImageData(topLeftCorner.x, topLeftCorner.y, bottomRightCorner.x -topLeftCorner.x, bottomRightCorner.y - topLeftCorner.y);
 
-		/* RESIZE OUR ORIGINAL CANVAS TO TE SIZE WE NEED */
+		/* RESIZE OUR ORIGINAL CANVAS TO NEEDED SIZE */
 		canvas.width = bottomRightCorner.x - topLeftCorner.x;
 		canvas.height = bottomRightCorner.y - topLeftCorner.y;
 
-		/* NOW WE CLEAN THE CANVAS*/
+		/* CLEAN THE CANVAS*/
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 
-		/* FINALLY WE "PASTE" BACK THE RELEVANT CONTENT AT 0,0 */
+		/* "PASTE" BACK THE RELEVANT CONTENT AT 0,0 */
 		ctx.putImageData(relevantData, 0, 0);
 
 		//transferring to image as data url
@@ -122,6 +107,7 @@ $(document).ready(function(){
 		// set canvasImg image src to dataURL
 		document.getElementById('canvasImg').src = dataURL;
 		
+		//SHOW THE IMAGE
 		$("img").show();
 	});
 });
