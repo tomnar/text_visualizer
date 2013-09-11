@@ -1,4 +1,5 @@
 $(document).ready(function(){
+/*
 var text2 = "this is a test. this too. yea test";
 var modifier = 1;
 
