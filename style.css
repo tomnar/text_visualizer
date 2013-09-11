@@ -18,3 +18,9 @@ button{
 	margin: 10px auto;
 	padding: 5px 20px;;
 }
+canvas{
+	display:none;
+}
+img{
+	display:none;
+}
